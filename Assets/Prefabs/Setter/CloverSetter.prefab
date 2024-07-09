@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5333885447977553014
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8801021181115255946}
+  - component: {fileID: 996936616406452514}
+  m_Layer: 0
+  m_Name: CloverSetter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8801021181115255946
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5333885447977553014}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &996936616406452514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5333885447977553014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf712a0a86c30824280292cac33dbce2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cardSoList:
+  - {fileID: 11400000, guid: 9cbdde399ce49c34ab72071cb8600e44, type: 2}
+  - {fileID: 11400000, guid: 9e625c9fd8784e047ad89ecc1e1cfdbb, type: 2}
+  - {fileID: 11400000, guid: 1aa03534c9e1488499bd2ee940d55409, type: 2}
+  - {fileID: 11400000, guid: 56d933048d3ea2344a4b21b623429db1, type: 2}
+  - {fileID: 11400000, guid: 20b00e713282b4e46ba6cbb5141fd18c, type: 2}
+  - {fileID: 11400000, guid: be81ea3ffaf256b428ad8a096038cd5a, type: 2}
+  - {fileID: 11400000, guid: c9fb064f15cbbea4f95d1894ce1fb68c, type: 2}
+  - {fileID: 11400000, guid: a9d8d5b2e65598947bde5cb0672b7015, type: 2}
+  - {fileID: 11400000, guid: 3090590a0b6b49140851d0338cc3f067, type: 2}
+  - {fileID: 11400000, guid: 1c6edbc958dd22e4d8bf86c1a495e884, type: 2}
+  - {fileID: 11400000, guid: 3750645c8db06424c93c9b3050e6af02, type: 2}
+  - {fileID: 11400000, guid: e8e9c8d15bcf21a47ab2fc94d7b493fe, type: 2}
+  - {fileID: 11400000, guid: 0950f107e82c1ea469cbafed0bc2a024, type: 2}
+  cardFront:
+  - {fileID: 21300000, guid: 56b480213ded30244b28e72660856365, type: 3}
+  - {fileID: 21300000, guid: c2a5726b287996745aacff7b182a521d, type: 3}
+  - {fileID: 21300000, guid: 9302d42f098e67c41a201e19aa1d27d0, type: 3}
+  - {fileID: 21300000, guid: a99f39bc317efcf4aae469b213d0d163, type: 3}
+  - {fileID: 21300000, guid: d0e626a1e8e53a14e908b9c98e23b8f6, type: 3}
+  - {fileID: 21300000, guid: 9e4fef354a531d446b72020d5125348d, type: 3}
+  - {fileID: 21300000, guid: 0bcb19d93a016e94f93a7e2fac280bed, type: 3}
+  - {fileID: 21300000, guid: 626366a4a0c7bca4084306eb5489123b, type: 3}
+  - {fileID: 21300000, guid: 3d4efa847b2131947bb10e09e044efcc, type: 3}
+  - {fileID: 21300000, guid: 80a0d0770e8bb9f4ba714d5c5e782039, type: 3}
+  - {fileID: 21300000, guid: eb01a0c0319df854aa13366f4e1528a1, type: 3}
+  - {fileID: 21300000, guid: 0a6e3c6c40df41940ad2fb925fb0688c, type: 3}
+  - {fileID: 21300000, guid: b2d0ba18f8b024a49a61be93bf9c89c0, type: 3}
+  cardBack: {fileID: 21300000, guid: 0802620b3a2859f45bdd189c7bc35d02, type: 3}
