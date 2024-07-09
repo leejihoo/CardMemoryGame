@@ -1,7 +1,7 @@
 using System;
-using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Card : MonoBehaviour,IPointerClickHandler
 {
@@ -10,8 +10,18 @@ public class Card : MonoBehaviour,IPointerClickHandler
     public bool isFliped;
     public Action<Card> OnClickCard;
 
+    private void Awake() {
+        OnClickCard += GameManager.Instance.GetCardInfo;
+    }
+
+    private void OnDestroy() {
+        OnClickCard -= GameManager.Instance.GetCardInfo;
+    }
+
     public void OnPointerClick(PointerEventData eventData)
     {
-        OnClickCard?.Invoke(this);
+        if(!isFliped){
+            OnClickCard?.Invoke(this);
+        }
     }
 }
