@@ -65,8 +65,13 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    public void UneableCard(Card card){
-        card.enabled = false;
+    public void UneableCard(List<Card> cards){
+        foreach(var card in cards){
+            var tempColor = card.cardImage.color;
+            tempColor.a = 0;
+            card.cardImage.color = tempColor;
+            //card.gameObject.SetActive(false);;
+        }
     }
 
     public bool IsExistDuplicateCard(string cardId, List<Card> randomCards){
