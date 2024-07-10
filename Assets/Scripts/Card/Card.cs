@@ -11,6 +11,9 @@ public class Card : MonoBehaviour,IPointerClickHandler
     public Action<Card> OnClickCard;
 
     private void Awake() {
+        cardImage.sprite = cardSO.backImage;
+        
+    }
         OnClickCard += GameManager.Instance.GetCardInfo;
     }
 
