@@ -3,8 +3,10 @@ using UnityEngine;
 
 public class PopupManager : MonoBehaviour
 {
-    public Stack<int> managingPopups;
+    public Stack<GameObject> managingPopups;
+    public PopupFactory popupFactory;
 
+    public StageManager stageManager;
 
     public void RemovePopup(){
         if(managingPopups.Count > 0){
