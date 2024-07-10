@@ -20,7 +20,7 @@ public class Card : MonoBehaviour,IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(!isFliped){
+        if(!isFliped && !GameManager.Instance.isdelay){
             OnClickCard?.Invoke(this);
         }
     }
