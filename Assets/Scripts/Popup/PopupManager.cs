@@ -8,6 +8,10 @@ public class PopupManager : MonoBehaviour
 
     public StageManager stageManager;
 
+    private void Awake() {
+        managingPopups = new Stack<GameObject>();
+    }
+
     public void RemovePopup(){
         if(managingPopups.Count > 0){
             var popup = managingPopups.Pop();
