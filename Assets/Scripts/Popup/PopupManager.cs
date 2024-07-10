@@ -5,8 +5,13 @@ public class PopupManager : MonoBehaviour
 {
     public Stack<int> managingPopups;
 
-    public void RemovePopup(){
 
+    public void RemovePopup(){
+        if(managingPopups.Count > 0){
+            var popup = managingPopups.Pop();
+            popup.GetComponent<PopupWithButton>().OnClicked = null;
+            Destroy(popup);
+        }
     }
 
     public void CreatePopup(PopupType popupType, string content){
