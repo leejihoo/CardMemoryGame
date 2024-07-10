@@ -1,18 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class ClearStagePopup : MonoBehaviour
+public class ClearStagePopup : PopupWithButton
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public override void FillContent(string content){
+        Content.text = $"Stage{content}을 클리어 했습니다.\n 다음 스테이지로 이동하겠습니까?";
     }
 }
