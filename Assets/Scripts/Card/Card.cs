@@ -14,9 +14,17 @@ public class Card : MonoBehaviour,IPointerClickHandler
         cardImage.sprite = cardSO.backImage;
         
     }
+
+    private void OnEnable() {
         OnClickCard += GameManager.Instance.GetCardInfo;
     }
 
+    private void OnDisable() {
+        if(GameManager.Instance != null){
+            OnClickCard -= GameManager.Instance.GetCardInfo;
+        }
+        
+    }
     private void OnDestroy() {
         OnClickCard -= GameManager.Instance.GetCardInfo;
     }
