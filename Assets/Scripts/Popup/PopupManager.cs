@@ -8,7 +8,13 @@ public class PopupManager : MonoBehaviour
     public void RemovePopup(){
 
     }
-    public void CreatePopup(){
 
+    public void CreatePopup(PopupType popupType, string content){
+        var popup = popupFactory.GetPopup(popupType);
+        //popup.GetComponent<PopupWithButton>().OnClicked += stageManager.MoveNextStage;
+        var PopupWithButton = popup.GetComponent<PopupWithButton>();
+        PopupWithButton.OnClicked += RemovePopup;
+        PopupWithButton.FillContent(content);
+        managingPopups.Push(popup);
     }
 }
