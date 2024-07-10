@@ -22,8 +22,9 @@ public class CardManager : MonoBehaviour
 
     public List<Card> CreateRandomCardDeck(int cardPairCount){
         List<Card> randomCards = new List<Card>();
+        var cardCount = cardPairCount * 2;
 
-        while(randomCards.Count < cardPairCount){
+        while(randomCards.Count < cardCount){
             var randomNum = Random.Range(0,51);
             var randomCard = cardDeck[randomNum];
             
