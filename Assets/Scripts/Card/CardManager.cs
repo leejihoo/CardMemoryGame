@@ -7,6 +7,18 @@ public class CardManager : MonoBehaviour
 {
     public List<Card> cardDeck;
 
+    private void Awake() {
+        GameManager.Instance.OnSelectDifferentCards += FlipCardsToBackImage;
+        GameManager.Instance.OnSelectSameCards += UneableCard;
+    }
+    private void OnDisable() {
+        Debug.Log("CardManager Ondisable");
+        if(GameManager.Instance != null){
+            GameManager.Instance.OnSelectDifferentCards -= FlipCardsToBackImage;
+            GameManager.Instance.OnSelectSameCards -= UneableCard;
+        }
+    }
+
     public void FlipCardsToBackImage(List<Card> cards){
         foreach(var card in cards){
             card.isFliped = false;
