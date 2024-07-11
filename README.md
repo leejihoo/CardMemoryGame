@@ -10,7 +10,7 @@ stage는 총 3단계로 구성되어 있으며 2x2,2x4,3x6의 카드들을 30,60
 
 [테스트 시나리오](https://www.figma.com/design/gUshCJs6mz4XU4rHe9u1Hc/GameSpringCardGameProject?m=auto&t=EUN5i0E939H7R5B3-6)
 
-[테스트 결과](https://youtu.be/XxF_JaCMVJY)
+[테스트 결과](https://youtu.be/KLyAxMtQt7E)
 
 클래스 다이어그램
 
