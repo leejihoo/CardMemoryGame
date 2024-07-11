@@ -1,79 +1,65 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
 public class StageManager : MonoBehaviour
 {
-    public StageSO[] stageSOArray;
-    public int remainingCardPair;
-    public int currentStage;
-    public Action ClearStage;
-    public DynamicGridLayoutGroup grid;
-    public const int lastStage = 3;
+    #region Field
+    private int _remainingCardPair;
+    private int _currentStage;
+    private Action OnClearStage;
+    private const int _lastStage = 3;
+    private Queue<Card> _managedCards = new Queue<Card>();
+    [SerializeField] private StageSO[] stageSOArray;
+    [SerializeField] private DynamicGridLayoutGroup grid;
+    [SerializeField] private CardManager cardManager;
+    [SerializeField] private TMP_Text stageText;
+    [SerializeField] private PopupManager popupManager;
+    #endregion
 
-    public CardManager cardManager;
-
-    public Queue<Card> managedCards = new Queue<Card>();
-
-    public TMP_Text stageText;
-
-    public PopupManager popupManager;
-
+    #region LifeCycle
     private void Awake() {
         if(cardManager == null){
             cardManager = FindObjectOfType<CardManager>();
         }
 
-        GameManager.Instance.OnSelectSameCards += RemoveCardPair;
-        GameManager.Instance.OnGameStart += MoveNextStage;
-        GameManager.Instance.OnGameStart += ExposeGrid;
-        GameManager.Instance.OnGameStart += ExposeStageText;
-        GameManager.Instance.OnResetGame += HideGrid;
-        GameManager.Instance.OnResetGame += HideStageText;
-        GameManager.Instance.OnResetGame += ResetStageInfo;
-        ClearStage += () => popupManager.CreatePopup(PopupType.STAGECLEAR, currentStage.ToString());
-        ClearStage += GameManager.Instance.StopCountDown;
+        if(popupManager == null){
+            popupManager = FindObjectOfType<PopupManager>();
+        }
+    }
+
+    private void OnEnable() {
+        SubscribeEvents();
     }
 
     private void OnDisable() {
-        if(GameManager.Instance != null){
-            GameManager.Instance.OnSelectSameCards -= RemoveCardPair;
-            GameManager.Instance.OnGameStart -= MoveNextStage;
-            GameManager.Instance.OnGameStart -= ExposeGrid;
-            GameManager.Instance.OnGameStart -= ExposeStageText;
-            GameManager.Instance.OnResetGame -= HideGrid;
-            GameManager.Instance.OnResetGame -= HideStageText;
-            GameManager.Instance.OnResetGame -= ResetStageInfo;
-        }
-        
-        ClearStage = null;
+        UnsubscribeEvents();
     }
+    #endregion
 
-    private void OnDestroy() {
-        
-    }
-
+    #region Method
     public void MoveNextStage(){
-        currentStage += 1;
-        var stageSO = stageSOArray[currentStage-1];
+        _currentStage += 1;
+        var stageSO = stageSOArray[_currentStage-1];
         GameManager.Instance.SetGameInfo(stageSO.stagePoint,stageSO.stageTimeLimit);
         SetStage(stageSO);
     }
 
-    public bool IsExistNextStage(){
-        if(currentStage == lastStage){
+    private bool IsExistNextStage(){
+        if(_currentStage == _lastStage){
             return false;
         }
         return true;
     }
 
-    public void RemoveCardPair(List<Card> cards){
-        remainingCardPair -= 1;
+    private void RemoveCardPair(List<Card> cards){
+        _remainingCardPair -= 1;
         if(!IsExistRemainingCardPair()){
             if(IsExistNextStage()){
-                if(GameManager.Instance.isPlayingGame){
-                    ClearStage?.Invoke();                    
+                if(GameManager.Instance.IsPlayingGame){
+                    OnClearStage?.Invoke();                    
                 }
             }
             else{
@@ -81,67 +67,142 @@ public class StageManager : MonoBehaviour
             }
         }
     }
-    public bool IsExistRemainingCardPair(){
-        if(remainingCardPair > 0){
+
+    private bool IsExistRemainingCardPair(){
+        if(_remainingCardPair > 0){
             return true;
         }
 
         return false;
     }
 
-    public void SetStage(StageSO stageSO){
+    private void SetStage(StageSO stageSO){
+        // 이전 스테이지 카드 제거
         DeleteAllCards();
-
-        //grid.EableSizeFitter();
-        grid.SetCardSize(stageSO.cardWidth, stageSO.cardHeight);
-        grid.SetStageSize(stageSO.row);
-
-        remainingCardPair = (int)(stageSO.row * stageSO.col * 0.5);
-        var stageCards = cardManager.CreateRandomCardDeck(remainingCardPair);
+        SetBoard(stageSO);
+        
+        _remainingCardPair = (int)(stageSO.row * stageSO.col * 0.5);
+        var stageCards = cardManager.CreateRandomCardDeck(_remainingCardPair);
         InstantiateCardDeck(stageCards);
-        
-        //grid.uneableSizeFitter();
 
-        stageText.text = "Stage: " + stageSO.stageNumber.ToString();
-        
+        UpdateStageText(stageSO);
     }
 
-    public void InstantiateCardDeck(List<Card> cards){
+    private void SetBoard(StageSO stageSO){
+        grid.SetCardSize(stageSO.cardWidth, stageSO.cardHeight);
+        grid.SetStageSize(stageSO.row);
+    }
+
+    private void UpdateStageText(StageSO stageSO){
+        stageText.text = "Stage: " + stageSO.stageNumber.ToString();
+    }
+
+    private void InstantiateCardDeck(List<Card> cards){
         foreach(var card in cards){
             var instant = Instantiate(card,grid.transform,false);
-            instant.OnClickCard += cardManager.FlipCardToFrontImage;
-            instant.OnClickCard += (Card card) => SoundManager.Instance.PlayCommonMonsterSfxAt(instant.transform.position,"cardPlace2",false);
-            managedCards.Enqueue(instant);
+            SubsribeOnClickCard(instant);
+            _managedCards.Enqueue(instant);
         }
     }
 
-    public void DeleteAllCards(){
-        while(managedCards.Count > 0){
-            var card = managedCards.Dequeue();
+    private void SubsribeOnClickCard(Card instant){
+        instant.OnClickCard += cardManager.FlipCardToFrontImage;
+        instant.OnClickCard += (Card card) => SoundManager.Instance.PlayCommonSfxAt(instant.transform.position,"cardPlace2",false);
         instant.OnClickCard += (Card card) => UIAnimationManager.Instance.ExecuteAnimation(instant.transform,AnimaitonType.Rotation);
+    }
+
+    private void DeleteAllCards(){
+        while(_managedCards.Count > 0){
+            var card = _managedCards.Dequeue();
             card.OnClickCard = null;
+            card.transform.DOKill();
             Destroy(card.gameObject);
         }
     }
 
-    public void HideStageText(){
+    private void HideStageText(){
         stageText.gameObject.SetActive(false);
     }
 
-    public void ExposeStageText(){
+    private void ExposeStageText(){
         stageText.gameObject.SetActive(true);
     }
 
-    public void HideGrid(){
+    private void HideGrid(){
         grid.gameObject.SetActive(false);
     }
 
-    public void ExposeGrid(){
+    private void ExposeGrid(){
         grid.gameObject.SetActive(true);
     }
 
-    public void ResetStageInfo(){
-        remainingCardPair = 0;
-        currentStage = 0;
+    private void ResetStageInfo(){
+        _remainingCardPair = 0;
+        _currentStage = 0;
     }
+
+        #region Subscribe
+    private void SubscribeEvents(){
+        SubscribeOnSelectSameCards();
+        SubscribeOnGameStart();
+        SubscribeOnResetGame();
+        SubscribeOnClearStage();
+    }
+
+    private void SubscribeOnSelectSameCards(){
+        GameManager.Instance.OnSelectSameCards += RemoveCardPair;
+    }
+
+    private void SubscribeOnGameStart(){
+        GameManager.Instance.OnGameStart += MoveNextStage;
+        GameManager.Instance.OnGameStart += ExposeGrid;
+        GameManager.Instance.OnGameStart += ExposeStageText;
+    }
+
+    private void SubscribeOnResetGame(){
+        GameManager.Instance.OnResetGame += HideGrid;
+        GameManager.Instance.OnResetGame += HideStageText;
+        GameManager.Instance.OnResetGame += ResetStageInfo;
+    }
+
+    private void SubscribeOnClearStage(){
+        OnClearStage += () => popupManager.CreatePopup(PopupType.STAGECLEAR, _currentStage.ToString());
+        OnClearStage += GameManager.Instance.StopCountDown;
+        OnClearStage += () => SoundManager.Instance.PlayCommonSfxAt("DM-CGS-26");
+    }
+        #endregion
+
+        #region Unsubscribe
+    private void UnsubscribeEvents(){
+        if(GameManager.Instance != null){
+            UnsubscribeOnSelectSameCards();
+            UnsubscribeOnGameStart();
+            UnsubscribeOnResetGame();
+        }
+
+        UnsubscribeOnClearStage();
+    }
+
+    private void UnsubscribeOnSelectSameCards(){
+        GameManager.Instance.OnSelectSameCards -= RemoveCardPair;
+    }
+
+    private void UnsubscribeOnGameStart(){
+        GameManager.Instance.OnGameStart -= MoveNextStage;
+        GameManager.Instance.OnGameStart -= ExposeGrid;
+        GameManager.Instance.OnGameStart -= ExposeStageText;
+    }
+
+    private void UnsubscribeOnResetGame(){
+        GameManager.Instance.OnResetGame -= HideGrid;
+        GameManager.Instance.OnResetGame -= HideStageText;
+        GameManager.Instance.OnResetGame -= ResetStageInfo;
+    }
+
+    private void UnsubscribeOnClearStage(){
+        OnClearStage = null;
+    }
+            #endregion
+    
+    #endregion
 }
