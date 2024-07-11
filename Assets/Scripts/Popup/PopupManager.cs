@@ -1,31 +1,43 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class PopupManager : MonoBehaviour
 {
-    public Stack<GameObject> managingPopups;
-    public PopupFactory popupFactory;
+    #region Field
+    private Stack<GameObject> _managingPopups;
+    [SerializeField] private PopupFactory popupFactory;
+    #endregion
 
-    public StageManager stageManager;
-
+    #region LifeCycle
     private void Awake() {
-        managingPopups = new Stack<GameObject>();
+        _managingPopups = new Stack<GameObject>();
     }
+    #endregion
 
-    public void RemovePopup(){
-        if(managingPopups.Count > 0){
-            var popup = managingPopups.Pop();
+    #region Method
+    private void RemovePopup(){
+        if(_managingPopups.Count > 0){
+            var popup = _managingPopups.Pop();
             popup.GetComponent<PopupWithButton>().OnClicked = null;
+            popup.transform.DOKill();
+            popup.GetComponent<CanvasGroup>()?.DOKill();
             Destroy(popup);
         }
     }
 
     public void CreatePopup(PopupType popupType, string content){
         var popup = popupFactory.GetPopup(popupType);
-        //popup.GetComponent<PopupWithButton>().OnClicked += stageManager.MoveNextStage;
         var PopupWithButton = popup.GetComponent<PopupWithButton>();
-        PopupWithButton.OnClicked += RemovePopup;
+        ListenButtonEvent(PopupWithButton);
         PopupWithButton.FillContent(content);
-        managingPopups.Push(popup);
+        _managingPopups.Push(popup);
     }
+
+    private void ListenButtonEvent(PopupWithButton popupWithButton){
+        popupWithButton.OnClicked += RemovePopup;
+        popupWithButton.OnClicked += () => SoundManager.Instance.PlayCommonSfxAt("SFX_UI_Button_Mouse_Thick_Generic_1");
+    }
+    #endregion
 }

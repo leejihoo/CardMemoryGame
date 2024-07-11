@@ -2,15 +2,22 @@ using UnityEngine;
 
 public class PopupFactory : MonoBehaviour
 {
-    public GameObject gameClearPopup;
-    public GameObject clearStagePopup;
-    public GameObject timeOutPopup;
-    private StageManager stageManager;
-
-    private void OnEnable() {
-        stageManager = FindObjectOfType<StageManager>();
-    }
+    #region Field
+    [SerializeField] private GameObject gameClearPopup;
+    [SerializeField] private GameObject clearStagePopup;
+    [SerializeField] private GameObject timeOutPopup;
+    [SerializeField] private StageManager stageManager;
+    #endregion
     
+    #region LifeCycle
+    private void Awake() {
+        if(stageManager == null){
+            stageManager = FindObjectOfType<StageManager>();
+        }  
+    }
+    #endregion
+    
+    #region Method
     public GameObject GetPopup(PopupType popupType){
         var parent = GameObject.Find("Canvas").transform;
 
@@ -43,8 +50,5 @@ public class PopupFactory : MonoBehaviour
     public void ListenMoveStageButtonEvent(GameObject popup){
         popup.GetComponent<PopupWithButton>().OnClicked += stageManager.MoveNextStage;
     }
-
-    // public void Temp(){
-    //     Debug.Log("temp test");
-    // }
+    #endregion
 }
