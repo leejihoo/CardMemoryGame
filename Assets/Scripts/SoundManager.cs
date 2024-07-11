@@ -70,7 +70,7 @@ public class SoundManager : Singleton<SoundManager>
         _sfxPool.Enqueue(source);
     }
     
-    public void PlayCommonMonsterSfxAt(Vector3 position, string clipName, bool spatialized)
+    public void PlayCommonSfxAt(Vector3 position, string clipName, bool spatialized)
     {
         var source = _sfxPool.Dequeue();
 
@@ -78,6 +78,20 @@ public class SoundManager : Singleton<SoundManager>
         source.transform.position = position;
 
         source.spatialBlend = spatialized ? 1.0f : 0.0f;
+        
+        source.Play();
+        
+        _sfxPool.Enqueue(source);
+    }
+
+    public void PlayCommonSfxAt(string clipName)
+    {
+        var source = _sfxPool.Dequeue();
+
+        source.clip = commonMonsterSound.soundDictionary[clipName];
+        source.transform.position = new Vector3(0,0,0);
+
+        source.spatialBlend = 0.0f;
         
         source.Play();
         

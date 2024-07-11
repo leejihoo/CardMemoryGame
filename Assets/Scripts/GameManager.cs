@@ -7,137 +7,117 @@ using UnityEngine.UI;
 
 public class GameManager : Singleton<GameManager>
 {
-    public int pointSum;
-    public int stagePoint;
-    public float time;
-    public float currentTime;
-    public bool isExistSeletedCard;
-    public bool isGameEnd;
-    public bool isPlayingGame;
-    public bool isdelay;
-    public Card selectedCard;
+    #region Field
+    private int _pointSum;
+    private int _stagePoint;
+    private float _time;
+    private float _currentTime;
+    private bool _isExistSeletedCard;
+    private Card _selectedCard;
+    [SerializeField] private TMP_Text timeText;
+    [SerializeField] private TMP_Text pointText;
+    [SerializeField] private Button startButton;
+    [SerializeField] private Button backButton;
+    [SerializeField] private PopupManager popupManager;
+    public bool IsPlayingGame{ get; private set; }
+    public bool Isdelay { get; private set; }
     public Action OnTimeOut;
     public Action<List<Card>> OnSelectSameCards;
     public Action<List<Card>> OnSelectDifferentCards;
     public Action OnGameStart;
     public Action OnGameClear;
     public Action OnResetGame;
+    #endregion
 
-    public TMP_Text timeText;
-    public TMP_Text pointText;
-    public Button startButton;
-    public Button backButton;
-    public PopupManager popupManager;
-
-    public override void Awake() {
-        base.Awake();
-        OnTimeOut += GameOver;
-        OnTimeOut += () => popupManager.CreatePopup(PopupType.TIMEOUT, pointSum.ToString());
-        OnSelectSameCards += GetPoint;
-        OnGameClear += GameOver;
-        OnGameClear += () => popupManager.CreatePopup(PopupType.GAMECLEAR, pointSum.ToString());
-        
-        OnResetGame += HideBackButton;
-        OnResetGame += ExposeStartButton;
-        OnResetGame += HideText;
-        OnResetGame += ResetGameInfo;
-        
-        OnGameStart += ExposeBackButton;
-        OnGameStart += HideStartButton;
-        OnGameStart += ExposeText;
+    #region LifeCycle
+    private void OnEnable() {
+        SubscribeEvents();
     }
 
     private void Update() {
-        
-        if(!isGameEnd && isPlayingGame){
+        if(IsPlayingGame){
             CountDown();
         }
     }
 
     private void OnDisable() {
-        Debug.Log("GameManager Ondisable");
-        //OnTimeOut -= GameOver;
-        OnTimeOut = null;
-        OnSelectSameCards -= GetPoint;
-        OnGameClear -= GameOver;
-        OnResetGame -= HideBackButton;
-        OnResetGame -= ExposeStartButton;
-        OnResetGame -= HideText;
-        OnResetGame -= ResetGameInfo;
+        UnsubscribeEvents();
+    }
+    #endregion
 
-        OnGameStart -= ExposeBackButton;
-        OnGameStart -= HideStartButton;
-        OnGameStart -= ExposeText;
+    #region Method
+    private void UpdateTimeText(){
+        timeText.text = "Time: " + Mathf.Ceil(_currentTime).ToString() + " sec";
     }
 
-    private void OnDestroy() {
-        Debug.Log("GameManager OnDestroy");
-    }
-
-    public void UpdateTimeText(){
-        timeText.text = "Time: " + Mathf.Ceil(currentTime).ToString() + " sec";
-    }
-
-    public void GetPoint(List<Card> cards){
-        if(isPlayingGame){
-            pointSum += stagePoint;
+    private void GetPoint(List<Card> cards){
+        if(IsPlayingGame){
+            _pointSum += _stagePoint;
             UpdatePointText();
         }
     }
 
-    public void UpdatePointText(){
-        pointText.text = "Point: " + pointSum;
+    private void UpdatePointText(){
+        pointText.text = "Point: " + _pointSum;
     }
 
-    public void CountDown(){
-        currentTime -= Time.deltaTime;
-        if(IsTimeOver(currentTime)){
-            currentTime = 0;
+    private void CountDown(){
+        _currentTime -= Time.deltaTime;
+        if(IsTimeOver(_currentTime)){
+            _currentTime = 0;
             OnTimeOut?.Invoke();
         }
 
         UpdateTimeText();
     }
 
-    public bool IsSameCard(Card card){
-        if(selectedCard.cardSO.cardId == card.cardSO.cardId && !System.Object.ReferenceEquals(selectedCard,card)){
+    private bool IsSameCard(Card card){
+        // 자기자신을 선택하면 안된다.
+        if(_selectedCard.cardSO.cardId == card.cardSO.cardId && !System.Object.ReferenceEquals(_selectedCard,card)){
             return true;
         }
         return false;
     }
+
     public void GetCardInfo(Card card){
-        if(isExistSeletedCard){
+        if(_isExistSeletedCard){
             StartCoroutine(DelayAndHandleCardSelection(card));
             return;
         }
         
-        selectedCard = card;
-        isExistSeletedCard = true;
+        _selectedCard = card;
+        _isExistSeletedCard = true;
     }
 
      private IEnumerator DelayAndHandleCardSelection(Card card){
-        isdelay = true;
+        Isdelay = true;
         yield return StartCoroutine(Delay());
-        List<Card> cards = new List<Card>{ selectedCard, card};
+        List<Card> cards = new List<Card>{ _selectedCard, card};
+        
+        if(!IsPlayingGame){
+            yield break;;
+        }
+
         if(IsSameCard(card)){
             OnSelectSameCards?.Invoke(cards);
         }
         else{    
            OnSelectDifferentCards?.Invoke(cards);
         }
-        selectedCard = null;
-        isExistSeletedCard = false;
-        isdelay = false;         
+
+        _selectedCard = null;
+        _isExistSeletedCard = false;
+        Isdelay = false;         
      }
 
     public void SetGameInfo(int stagePoint, float time){
-        this.time = time;
-        currentTime = time;
-        this.stagePoint = stagePoint;
-        isPlayingGame = true;
+        this._time = time;
+        _currentTime = time;
+        this._stagePoint = stagePoint;
+        IsPlayingGame = true;
     }
 
-    public bool IsTimeOver(float time){
+    private bool IsTimeOver(float time){
         if(time > 0){
             return false;
         }
@@ -145,12 +125,12 @@ public class GameManager : Singleton<GameManager>
         return true;
     }
 
-    public void GameOver(){
-        isGameEnd = true;
-        isPlayingGame = false;
-        isdelay = true;
+    private void GameOver(){
+        IsPlayingGame = false;
+        Isdelay = true;
     }
 
+    // 계층 창의 start button event에 등록 됨
     public void StartGame(){
         OnGameStart?.Invoke();
     }
@@ -160,52 +140,132 @@ public class GameManager : Singleton<GameManager>
         OnResetGame?.Invoke();
     }
 
-    public void HideText(){
+    private void HideText(){
         timeText.gameObject.SetActive(false);
         pointText.gameObject.SetActive(false);
     }
 
-    public void ExposeText(){
+    private void ExposeText(){
         timeText.gameObject.SetActive(true);
         pointText.gameObject.SetActive(true);
     }
 
-    public void HideStartButton(){
+    private void HideStartButton(){
         startButton.gameObject.SetActive(false);
     }
 
-    public void ExposeStartButton(){
+    private void ExposeStartButton(){
         startButton.gameObject.SetActive(true);
     }
 
-    public void HideBackButton(){
+    private void HideBackButton(){
         backButton.gameObject.SetActive(false);
     }
 
-    public void ExposeBackButton(){
+    private void ExposeBackButton(){
         backButton.gameObject.SetActive(true);
     }
 
-    public void ResetGameInfo(){
-        pointSum = 0;
-        stagePoint = 0;
-        time = 0;
-        currentTime = 0;
-        isExistSeletedCard = false;
-        isGameEnd = false;
-        selectedCard = null;
-        isPlayingGame = false;
-        isdelay = false;
+    private void ResetGameInfo(){
+        _pointSum = 0;
+        _stagePoint = 0;
+        _time = 0;
+        _currentTime = 0;
+        _isExistSeletedCard = false;
+        _selectedCard = null;
+        IsPlayingGame = false;
+        Isdelay = false;
 
         UpdatePointText();
     }
 
-    public IEnumerator Delay(){
-        yield return new WaitForSeconds(0.5f);
+    private IEnumerator Delay(){
+        yield return new WaitForSeconds(0.8f);
     }
 
     public void StopCountDown(){
-        isPlayingGame = false;
+        IsPlayingGame = false;
     }
+
+        #region Subscribe
+    public void SubscribeEvents(){
+        SubscribeOnTimeOut();
+        SubscribeOnSelectSameCards();
+        SubscribeOnGameClear();
+        SubscribeOnResetGame();
+        SubscribeOnGameStart();
+        SubscribeOnSelectDifferentCards();
+    }
+
+    public void SubscribeOnTimeOut(){
+        OnTimeOut += GameOver;
+        OnTimeOut += () => popupManager.CreatePopup(PopupType.TIMEOUT, _pointSum.ToString());
+        OnTimeOut += () => SoundManager.Instance.PlayCommonSfxAt("DM-CGS-23");
+    }
+    public void SubscribeOnSelectSameCards(){
+        OnSelectSameCards += GetPoint;
+        OnSelectSameCards += (List<Card> cards) => SoundManager.Instance.PlayCommonSfxAt("coin_1_a");
+    }
+
+    public void SubscribeOnGameClear(){
+        OnGameClear += GameOver;
+        OnGameClear += () => popupManager.CreatePopup(PopupType.GAMECLEAR, _pointSum.ToString());
+        OnGameClear += () => SoundManager.Instance.PlayCommonSfxAt("DM-CGS-26");
+    }
+
+    public void SubscribeOnResetGame(){
+        OnResetGame += HideBackButton;
+        OnResetGame += ExposeStartButton;
+        OnResetGame += HideText;
+        OnResetGame += ResetGameInfo;
+    }    
+
+    public void SubscribeOnGameStart(){
+        OnGameStart += ExposeBackButton;
+        OnGameStart += HideStartButton;
+        OnGameStart += ExposeText;
+    }
+
+    public void SubscribeOnSelectDifferentCards(){
+        OnSelectDifferentCards += (List<Card> cards) => SoundManager.Instance.PlayCommonSfxAt("beep_1_a");
+    }
+        #endregion
+
+        #region Unsubscribe
+    public void UnsubscribeEvents(){
+        UnsubscribeOnTimeOut();
+        UnsubscribeOnSelectSameCards();
+        UnsubscribeOnGameClear();
+        UnsubscribeOnResetGame();
+        UnsubscribeOnGameStart();
+        UnsubscribeOnSelectDifferentCards();
+    }
+
+    public void UnsubscribeOnTimeOut(){
+        OnTimeOut = null;
+    }
+    public void UnsubscribeOnSelectSameCards(){
+        OnSelectSameCards = null;
+    }
+
+    public void UnsubscribeOnGameClear(){
+        OnGameClear = null;
+    }
+
+    public void UnsubscribeOnResetGame(){
+        OnResetGame = null;
+
+    }    
+
+    public void UnsubscribeOnGameStart(){
+        OnGameStart = ExposeBackButton;
+
+    }
+
+    public void UnsubscribeOnSelectDifferentCards(){
+        OnSelectDifferentCards = null;
+    }
+        #endregion
+    #endregion
 }
 
