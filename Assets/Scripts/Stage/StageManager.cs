@@ -118,6 +118,7 @@ public class StageManager : MonoBehaviour
     public void DeleteAllCards(){
         while(managedCards.Count > 0){
             var card = managedCards.Dequeue();
+        instant.OnClickCard += (Card card) => UIAnimationManager.Instance.ExecuteAnimation(instant.transform,AnimaitonType.Rotation);
             card.OnClickCard = null;
             Destroy(card.gameObject);
         }
