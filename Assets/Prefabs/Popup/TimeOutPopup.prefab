@@ -418,6 +418,7 @@ GameObject:
   - component: {fileID: 4538908809687899584}
   - component: {fileID: 2362942208005944010}
   - component: {fileID: 7015672259917747657}
+  - component: {fileID: -7258555553426604817}
   m_Layer: 5
   m_Name: TimeOutPopup
   m_TagString: Untagged
@@ -512,3 +513,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Content: {fileID: 6246567775345969702}
   Button: {fileID: 7650351399278366662}
+--- !u!225 &-7258555553426604817
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5627091539681009255}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
