@@ -1,24 +1,28 @@
 
 using System.Collections.Generic;
-using Unity.Collections;
 using UnityEngine;
 
 public class CardManager : MonoBehaviour
 {
-    public List<Card> cardDeck;
-
-    private void Awake() {
+    #region Field
+    [SerializeField] private List<Card> cardDeck;
+    #endregion
+    
+    #region LifeCycle
+    private void OnEnable() {
         GameManager.Instance.OnSelectDifferentCards += FlipCardsToBackImage;
         GameManager.Instance.OnSelectSameCards += UneableCard;
     }
+
     private void OnDisable() {
-        Debug.Log("CardManager Ondisable");
         if(GameManager.Instance != null){
             GameManager.Instance.OnSelectDifferentCards -= FlipCardsToBackImage;
             GameManager.Instance.OnSelectSameCards -= UneableCard;
         }
     }
+    #endregion
 
+    #region Method
     public void FlipCardsToBackImage(List<Card> cards){
         foreach(var card in cards){
             card.isFliped = false;
@@ -26,7 +30,6 @@ public class CardManager : MonoBehaviour
         }
     }
 
-    // 카드를 랜덤 생성할 때 OnClicked에 붙인다.
     public void FlipCardToFrontImage(Card card){
         card.isFliped = true;
         card.cardImage.sprite = card.cardSO.frontImage;
@@ -70,7 +73,6 @@ public class CardManager : MonoBehaviour
             var tempColor = card.cardImage.color;
             tempColor.a = 0;
             card.cardImage.color = tempColor;
-            //card.gameObject.SetActive(false);;
         }
     }
 
@@ -78,4 +80,5 @@ public class CardManager : MonoBehaviour
         var result = randomCards.Exists(x => x.cardSO.cardId == cardId);
         return result;
     }
+    #endregion
 }

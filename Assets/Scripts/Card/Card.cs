@@ -5,14 +5,16 @@ using UnityEngine.UI;
 
 public class Card : MonoBehaviour,IPointerClickHandler
 {
+    #region Field
     public CardSO cardSO;
     public Image cardImage;
     public bool isFliped;
     public Action<Card> OnClickCard;
+    #endregion
 
+    #region LifeCycle
     private void Awake() {
-        cardImage.sprite = cardSO.backImage;
-        
+        cardImage.sprite = cardSO.backImage;  
     }
 
     private void OnEnable() {
@@ -23,16 +25,15 @@ public class Card : MonoBehaviour,IPointerClickHandler
         if(GameManager.Instance != null){
             OnClickCard -= GameManager.Instance.GetCardInfo;
         }
-        
     }
-    private void OnDestroy() {
-        OnClickCard -= GameManager.Instance.GetCardInfo;
-    }
+    #endregion
 
+    #region Method
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(!isFliped && !GameManager.Instance.isdelay){
+        if(!isFliped && !GameManager.Instance.Isdelay){
             OnClickCard?.Invoke(this);
         }
     }
+    #endregion
 }
