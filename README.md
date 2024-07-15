@@ -4,13 +4,13 @@
 stage는 총 3단계로 구성되어 있으며 2x2,2x4,3x6의 카드들을 30,60,90초 이내에 맞춰야 클리어할 수 있습니다.
 
 ## 작성 문서
-[Flow Chart](https://www.figma.com/design/gUshCJs6mz4XU4rHe9u1Hc/GameSpringCardGameProject?m=auto&t=EUN5i0E939H7R5B3-1)
+[Flow Chart](https://www.figma.com/board/bymGXk1fPXIazpMUqhgIj6/GameSpringCardGameProject?t=dkLtw6lWYO571XQI-1)
 
 [기능 명세서](https://www.notion.so/1253388ddf034046867eb3d2de961d7e?pvs=4)
 
 [테스트 시나리오](https://www.figma.com/design/gUshCJs6mz4XU4rHe9u1Hc/GameSpringCardGameProject?m=auto&t=EUN5i0E939H7R5B3-6)
 
-[테스트 결과](https://youtu.be/XxF_JaCMVJY)
+[테스트 결과](https://youtu.be/KLyAxMtQt7E)
 
 클래스 다이어그램
 
