@@ -37,6 +37,12 @@ public class StageManager : MonoBehaviour
     private void OnDisable() {
         UnsubscribeEvents();
     }
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            FlipAll();
+        }
+    }
     #endregion
 
     #region Method
@@ -139,6 +145,20 @@ public class StageManager : MonoBehaviour
     private void ResetStageInfo(){
         _remainingCardPair = 0;
         _currentStage = 0;
+    }
+
+    private void FlipAll(){
+        foreach(var card in _managedCards){
+            cardManager.FlipCardToFrontImage(card); 
+        }
+
+        StartCoroutine(Delay(2));
+
+    }
+
+    private IEnumerator Delay(int value){
+        yield return new WaitForSeconds(value);
+        cardManager.FlipCardsToBackImage(_managedCards.ToList());
     }
 
         #region Subscribe
