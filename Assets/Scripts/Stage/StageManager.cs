@@ -10,7 +10,7 @@ public class StageManager : MonoBehaviour
     private int _remainingCardPair;
     private int _currentStage;
     private Action OnClearStage;
-    private const int _lastStage = 3;
+    private const int _lastStage = 5;
     private Queue<Card> _managedCards = new Queue<Card>();
     [SerializeField] private StageSO[] stageSOArray;
     [SerializeField] private DynamicGridLayoutGroup grid;

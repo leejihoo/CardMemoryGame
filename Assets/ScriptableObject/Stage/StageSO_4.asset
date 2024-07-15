@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2cbdaeb3b534547478b959ffcd48a6e9, type: 3}
-  m_Name: StageSO_2
+  m_Name: StageSO_4
   m_EditorClassIdentifier: 
-  stageNumber: 2
-  stagePoint: 1
-  stageTimeLimit: 30
-  row: 2
-  col: 3
-  cardHeight: 300
-  cardWidth: 400
+  stageNumber: 4
+  stagePoint: 4
+  stageTimeLimit: 90
+  row: 3
+  col: 6
+  cardHeight: 200
+  cardWidth: 300
