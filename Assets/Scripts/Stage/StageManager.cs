@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -37,15 +39,31 @@ public class StageManager : MonoBehaviour
     private void OnDisable() {
         UnsubscribeEvents();
     }
+
     private void Update() {
         if(Input.GetKeyDown(KeyCode.Alpha1))
         {
             FlipAll();
         }
+
+        if(Input.GetKeyDown(KeyCode.Alpha2)){
+            SuffleCardDeckBykeyboard();
+        }
     }
     #endregion
 
     #region Method
+
+    private void SuffleCardDeckBykeyboard(){
+        var tempList = _managedCards.ToList();
+        for (int i = 0; i < tempList.Count; i++) {
+            var temp = tempList[i];
+            var randomIndex = UnityEngine.Random.Range(0, tempList.Count);
+            temp.gameObject.transform.SetSiblingIndex(tempList.Count);
+            tempList[randomIndex].gameObject.transform.SetSiblingIndex(i);
+        }
+    }
+
     public void MoveNextStage(){
         _currentStage += 1;
         var stageSO = stageSOArray[_currentStage-1];
