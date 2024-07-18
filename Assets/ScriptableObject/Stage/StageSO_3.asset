@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: StageSO_3
   m_EditorClassIdentifier: 
   stageNumber: 3
-  stagePoint: 4
-  stageTimeLimit: 90
-  row: 3
-  col: 6
-  cardHeight: 200
-  cardWidth: 300
+  stagePoint: 2
+  stageTimeLimit: 60
+  row: 2
+  col: 4
+  cardHeight: 300
+  cardWidth: 400

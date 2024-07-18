@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -10,7 +12,7 @@ public class StageManager : MonoBehaviour
     private int _remainingCardPair;
     private int _currentStage;
     private Action OnClearStage;
-    private const int _lastStage = 3;
+    private const int _lastStage = 5;
     private Queue<Card> _managedCards = new Queue<Card>();
     [SerializeField] private StageSO[] stageSOArray;
     [SerializeField] private DynamicGridLayoutGroup grid;
@@ -37,9 +39,31 @@ public class StageManager : MonoBehaviour
     private void OnDisable() {
         UnsubscribeEvents();
     }
+
+    private void Update() {
+        if(Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            FlipAll();
+        }
+
+        if(Input.GetKeyDown(KeyCode.Alpha2)){
+            SuffleCardDeckBykeyboard();
+        }
+    }
     #endregion
 
     #region Method
+
+    private void SuffleCardDeckBykeyboard(){
+        var tempList = _managedCards.ToList();
+        for (int i = 0; i < tempList.Count; i++) {
+            var temp = tempList[i];
+            var randomIndex = UnityEngine.Random.Range(0, tempList.Count);
+            temp.gameObject.transform.SetSiblingIndex(tempList.Count);
+            tempList[randomIndex].gameObject.transform.SetSiblingIndex(i);
+        }
+    }
+
     public void MoveNextStage(){
         _currentStage += 1;
         var stageSO = stageSOArray[_currentStage-1];
@@ -139,6 +163,20 @@ public class StageManager : MonoBehaviour
     private void ResetStageInfo(){
         _remainingCardPair = 0;
         _currentStage = 0;
+    }
+
+    private void FlipAll(){
+        foreach(var card in _managedCards){
+            cardManager.FlipCardToFrontImage(card); 
+        }
+
+        StartCoroutine(Delay(2));
+
+    }
+
+    private IEnumerator Delay(int value){
+        yield return new WaitForSeconds(value);
+        cardManager.FlipCardsToBackImage(_managedCards.ToList());
     }
 
         #region Subscribe
